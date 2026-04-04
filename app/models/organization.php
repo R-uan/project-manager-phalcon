@@ -6,9 +6,7 @@ use Phalcon\Mvc\Model;
 class Organization extends Model {
   public $id;
   public $name;
-  public $email;
   public $created_at;
-  public $contact_information;
 
   public function initialize() {
     $this->setSchema('public');
@@ -21,6 +19,15 @@ class Organization extends Model {
       [
         'alias'    => 'memberships',
         'reusable' => true,
+      ]
+    );
+
+    $this->hasMany(
+      "id",
+      OrganizationContact::class,
+      "organization_id",
+      [
+        "alias" => "contact",
       ]
     );
 

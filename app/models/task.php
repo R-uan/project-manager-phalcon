@@ -12,7 +12,7 @@ class Task extends Model {
   public $project_id;
 
   public function initialize() {
-    $this->setSource("project_tasks");
+    $this->setSource("tasks");
     $this->setSchema("public");
 
     $this->belongsTo(

@@ -17,13 +17,10 @@ class AssignedTaskMember extends Model {
       "id",
     );
 
-    $this->hasMany(
-      "id",
-      AssignedTaskMember::class,
-      "task_id",
-      [
-        'alias' => 'assignedTaskMembers',
-      ]
+    $this->belongsTo(
+      'task_id',
+      Task::class,
+      'id'
     );
   }
 }
