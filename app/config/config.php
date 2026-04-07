@@ -27,4 +27,9 @@ return new \Phalcon\Config\Config([
     'cacheDir'       => BASE_PATH . '/cache/',
     'baseUri'        => '/',
   ],
+  'jwt'         => [
+    'expiration' => 3600,
+    'algorithm'  => 'HS256',
+    'secret'     => getenv('JWT_SECRET'),
+  ],
 ]);

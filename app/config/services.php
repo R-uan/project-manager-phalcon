@@ -1,6 +1,10 @@
 <?php
 declare (strict_types = 1);
 
+use App\Library\JwtService;
+use App\Repositories\Interfaces\IUserRepository;
+use App\Repositories\UserRepository;
+use App\Services\UserService;
 use Phalcon\Flash\Direct as Flash;
 use Phalcon\Html\Escaper;
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
@@ -122,4 +126,22 @@ $di->setShared('session', function () {
 
 $di->setShared('router', function () {
   return include __DIR__ . '/routes.php';
+});
+
+// Repositories
+$di->set(IUserRepository::class, function () {
+  return new UserRepository();
+});
+
+// Services
+$di->setShared('jwt', function () {
+  $config = $this->getConfig();
+  return new JwtService($config);
+});
+
+$di->setShared('userService', function () use ($di) {
+  return new UserService(
+    $di->get(IUserRepository::class),
+    $di->get('jwt')
+  );
 });

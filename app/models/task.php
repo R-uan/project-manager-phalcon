@@ -3,13 +3,13 @@ namespace App\Models;
 use Plalcon\Mvc\Model;
 
 class Task extends Model {
-  public $id;          // number
+  public $id;          // int
   public $title;       // string
   public $description; // string
   public $created_at;  // date
   public $startline;   // date
   public $deadline;    // date
-  public $project_id;
+  public $project_id;  // int
 
   public function initialize() {
     $this->setSource("tasks");
