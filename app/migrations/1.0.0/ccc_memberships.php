@@ -1,6 +1,5 @@
 <?php
 
-use Phalcon\Db\Column;
 use Phalcon\Db\Exception;
 use Phalcon\Migrations\Mvc\Model\Migration;
 
@@ -15,7 +14,7 @@ class CccMembershipsMigration_100 extends Migration {
    * @throws Exception
    */
   public function morph(): void {
-    $this->morphTable('memberships', [
+    /* $this->morphTable('memberships', [
       'columns' => [
         new Column('id', [
           'type'          => Column::TYPE_INTEGER,
@@ -37,21 +36,7 @@ class CccMembershipsMigration_100 extends Migration {
           'notNull' => true,
         ]),
       ],
-      /* 'references' => [
-        new Reference('fk_membership_user', [
-          'referencedTable'   => 'users',
-          'columns'           => ['user_id'],
-          'referencedColumns' => ['id'],
-          'onDelete'          => 'CASCADE',
-        ]),
-        new Reference('fk_membership_org', [
-          'referencedTable'   => 'organizations',
-          'columns'           => ['organization_id'],
-          'referencedColumns' => ['id'],
-          'onDelete'          => 'CASCADE',
-        ]),
-      ], */
-    ]);
+    ]); */
   }
 
   /**
@@ -60,6 +45,15 @@ class CccMembershipsMigration_100 extends Migration {
    * @return void
    */
   public function up(): void {
+    $this->getConnection()->execute("
+      CREATE TABLE
+        memberships (
+            id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            role VARCHAR(20) NOT NULL,
+            user_id INT NOT NULL,
+            organization_id INT NOT NULL
+        )
+    ");
   }
 
   /**

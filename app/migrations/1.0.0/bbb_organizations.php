@@ -1,6 +1,5 @@
 <?php
 
-use Phalcon\Db\Column;
 use Phalcon\Db\Exception;
 use Phalcon\Migrations\Mvc\Model\Migration;
 
@@ -15,7 +14,7 @@ class BbbOrganizationsMigration_100 extends Migration {
    * @throws Exception
    */
   public function morph(): void {
-    $this->morphTable('organizations', [
+    /* $this->morphTable('organizations', [
       'columns' => [
         new Column('id', [
           'type'          => Column::TYPE_INTEGER,
@@ -29,10 +28,10 @@ class BbbOrganizationsMigration_100 extends Migration {
           'notNull' => true,
         ]),
         new Column('created_at', [
-          'type' => Column::TYPE_DATETIME,
+          'type' => Column::TYPE_TIMESTAMPTZ,
         ]),
       ],
-    ]);
+    ]); */
   }
 
   /**
@@ -41,6 +40,14 @@ class BbbOrganizationsMigration_100 extends Migration {
    * @return void
    */
   public function up(): void {
+    $this->getConnection()->execute("
+      CREATE TABLE
+        organizations (
+            id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            name VARCHAR(50) NOT NULL,
+            created_at TIMESTAMPTZ
+        )
+    ");
   }
 
   /**

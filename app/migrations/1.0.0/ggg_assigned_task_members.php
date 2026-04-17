@@ -1,6 +1,5 @@
 <?php
 
-use Phalcon\Db\Column;
 use Phalcon\Db\Exception;
 use Phalcon\Migrations\Mvc\Model\Migration;
 
@@ -15,7 +14,7 @@ class GggAssignedTaskMembersMigration_100 extends Migration {
    * @throws Exception
    */
   public function morph(): void {
-    $this->morphTable('assigned_task_members', [
+    /* $this->morphTable('assigned_task_members', [
       'columns' => [
         new Column('id', [
           'type'          => Column::TYPE_INTEGER,
@@ -32,21 +31,7 @@ class GggAssignedTaskMembersMigration_100 extends Migration {
           'notNull' => true,
         ]),
       ],
-      /* 'references' => [
-        new Reference('fk_assigned_task_members_project_tasks', [
-          'referencedTable'   => 'tasks',
-          'columns'           => ['task_id'],
-          'referencedColumns' => ['id'],
-          'onDelete'          => 'CASCADE',
-        ]),
-        new Reference('fk_assigned_task_members_assigned_member', [
-          'referencedTable'   => 'assigned_project_members',
-          'columns'           => ['assigned_member_id'],
-          'referencedColumns' => ['id'],
-          'onDelete'          => 'CASCADE',
-        ]),
-      ], */
-    ]);
+    ]); */
   }
 
   /**
@@ -55,6 +40,14 @@ class GggAssignedTaskMembersMigration_100 extends Migration {
    * @return void
    */
   public function up(): void {
+    $this->getConnection()->execute("
+      CREATE TABLE
+        assigned_task_members (
+            id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            task_id INT NOT NULL,
+            assigned_member_id INT NOT NULL
+        )
+    ");
   }
 
   /**

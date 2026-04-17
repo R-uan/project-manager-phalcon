@@ -1,6 +1,5 @@
 <?php
 
-use Phalcon\Db\Column;
 use Phalcon\Db\Exception;
 use Phalcon\Migrations\Mvc\Model\Migration;
 
@@ -15,7 +14,7 @@ class FffAssignedProjectMembersMigration_100 extends Migration {
    * @throws Exception
    */
   public function morph(): void {
-    $this->morphTable('assigned_project_members', [
+    /* $this->morphTable('assigned_project_members', [
       'columns' => [
         new Column('id', [
           'type'          => Column::TYPE_INTEGER,
@@ -32,21 +31,7 @@ class FffAssignedProjectMembersMigration_100 extends Migration {
           'notNull' => true,
         ]),
       ],
-      /* 'references' => [
-        new Reference('fk_assigned_project_members_memberships', [
-          'referencedTable'   => 'memberships',
-          'columns'           => ['membership_id'],
-          'referencedColumns' => ['id'],
-          'onDelete'          => 'CASCADE',
-        ]),
-        new Reference('fk_assigned_project_members_projects', [
-          'referencedTable'   => 'projects',
-          'columns'           => ['project_id'],
-          'referencedColumns' => ['id'],
-          'onDelete'          => 'CASCADE',
-        ]),
-      ], */
-    ]);
+    ]);*/
   }
 
   /**
@@ -55,6 +40,14 @@ class FffAssignedProjectMembersMigration_100 extends Migration {
    * @return void
    */
   public function up(): void {
+    $this->getConnection()->execute("
+      CREATE TABLE
+        assigned_project_members (
+            id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            project_id INT NOT NULL,
+            membership_id INT NOT NULL
+        )
+    ");
   }
 
   /**

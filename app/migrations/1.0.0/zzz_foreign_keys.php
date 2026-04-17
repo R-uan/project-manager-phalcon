@@ -37,7 +37,5 @@ class ZzzForeignKeysMigration_100 extends Migration {
    *
    * @return void
    */
-  public function down(): void {
-    $this->connection->dropTable('organizations');
-  }
+  public function down(): void {}
 }

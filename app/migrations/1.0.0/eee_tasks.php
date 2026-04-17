@@ -1,6 +1,5 @@
 <?php
 
-use Phalcon\Db\Column;
 use Phalcon\Db\Exception;
 use Phalcon\Migrations\Mvc\Model\Migration;
 
@@ -15,7 +14,7 @@ class EeeTasksMigration_100 extends Migration {
    * @throws Exception
    */
   public function morph(): void {
-    $this->morphTable('tasks', [
+    /* $this->morphTable('tasks', [
       'columns' => [
         new Column('id', [
           'type'          => Column::TYPE_INTEGER,
@@ -37,25 +36,17 @@ class EeeTasksMigration_100 extends Migration {
           'notNull' => true,
         ]),
         new Column('startline', [
-          'type' => Column::TYPE_DATETIME,
+          'type' => Column::TYPE_TIMESTAMPTZ,
         ]),
         new Column('deadline', [
-          'type' => Column::TYPE_DATETIME,
+          'type' => Column::TYPE_TIMESTAMPTZ,
         ]),
         new Column('project_id', [
           'type'    => Column::TYPE_INTEGER,
           'notNull' => true,
         ]),
       ],
-      /* 'references' => [
-        new Reference('fk_projects_tasks_projects', [
-          'referencedTable'   => 'projects',
-          'columns'           => ['project_id'],
-          'referencedColumns' => ['id'],
-          'onDelete'          => 'CASCADE',
-        ]),
-      ], */
-    ]);
+    ]); */
   }
 
   /**
@@ -64,6 +55,18 @@ class EeeTasksMigration_100 extends Migration {
    * @return void
    */
   public function up(): void {
+    $this->getConnection()->execute("
+      CREATE TABLE
+        tasks (
+            id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            title VARCHAR(50) NOT NULL,
+            description VARCHAR(500),
+            created_at TIMESTAMPTZ,
+            startline TIMESTAMPTZ,
+            deadline TIMESTAMPTZ,
+            project_id INT NOT NULL
+        )
+    ");
   }
 
   /**
