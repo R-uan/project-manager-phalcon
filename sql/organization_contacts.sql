@@ -1,6 +1,6 @@
 CREATE TABLE
     organization_contacts (
-        id SERIAL PRIMARY KEY,
+        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,        
         website VARCHAR(100),
         email VARCHAR(100),
         number VARCHAR(20),
