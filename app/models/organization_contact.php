@@ -5,9 +5,9 @@ use Phalcon\Mvc\Model;
 
 class OrganizationContact extends Model {
   public $id;
-  public $website;
   public $email;
   public $number;
+  public $website;
   public $organization_id;
 
   public function initialize() {

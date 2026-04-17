@@ -1,10 +1,19 @@
 <?php
 
-$router = new \Phalcon\Mvc\Router();
+$router = $di->getRouter();
+
+// Define your routes here
 
 $router->addGet('/api/v1/users', [
   'controller' => 'users',
   'action'     => 'index',
 ]);
 
-return $router;
+$router->addGet('/auth/login', 'Auth::login');
+$router->addPost('/auth/login', 'Auth::login');
+$router->addGet('/auth/register', 'Auth::register');
+$router->addPost('/auth/register', 'Auth::register');
+$router->addGet('/auth/logout', 'Auth::logout');
+$router->addGet('/', 'Index::index');
+
+$router->handle($_SERVER['REQUEST_URI']);

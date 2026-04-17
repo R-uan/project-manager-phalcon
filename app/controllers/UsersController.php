@@ -1,9 +1,8 @@
 <?php
 
 use App\Dto\Request\CreateUserRequestDto;
-use Phalcon\Mvc\Controller;
 
-class UsersController extends Controller {
+class UsersController extends ControllerBase {
   public function registerAction() {
     $body     = $this->request->getJsonRawBody(true);
     $request  = CreateUserRequestDto::fromArray($body);

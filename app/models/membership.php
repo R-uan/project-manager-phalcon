@@ -3,10 +3,13 @@ namespace App\Models;
 use Phalcon\Mvc\Model;
 
 class Membership extends Model {
-  public $id;      // int
-  public $role;    // string
-  public $user_id; // foreign key
-  public $organization_id;
+  public $id; // int
+
+  public function __construct(
+    public int $user_id,
+    public int $organization_id,
+    public $role, // string
+  ) {}
 
   public function initialize() {
     $this->setSchema("public");

@@ -10,10 +10,10 @@ defined('APP_PATH') || define('APP_PATH', BASE_PATH . '/app');
 return new \Phalcon\Config\Config([
   'database'    => [
     'adapter'  => 'Postgresql',
-    'host'     => 'database',
+    'host'     => 'devdb',
     'username' => 'postgres',
     'password' => 'postgres',
-    'dbname'   => 'pm_dev',
+    'dbname'   => 'pmdev',
     'schema'   => 'public',
   ],
   'application' => [

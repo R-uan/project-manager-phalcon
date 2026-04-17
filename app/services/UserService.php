@@ -16,14 +16,14 @@ class UserService {
   ) {}
 
   public function createUser(CreateUserRequestDto $request): CreateUserResponseDto {
-    if ($this->userRepository->findByEmail($request->email)) {
+    if ($this->userRepository->findByEmail($request->email) !== null) {
       throw new \RuntimeException("Email already in use: {$request->email}");
     }
 
     $user             = new User();
     $user->email      = $request->email;
-    $user->first_name = $request->firstName;
-    $user->last_name  = $request->lastName;
+    $user->first_name = $request->first_name;
+    $user->last_name  = $request->last_name;
     $user->password   = password_hash($request->password, PASSWORD_BCRYPT);
     $save             = $this->userRepository->create($user);
 
@@ -44,13 +44,6 @@ class UserService {
       throw new UnauthorizedException("Invalid credentials");
     }
 
-    return $this->jwtService->encode($user);
-  }
-
-  public function test() {
-    $user        = new User();
-    $user->id    = 999;
-    $user->email = "test";
     return $this->jwtService->encode($user);
   }
 }

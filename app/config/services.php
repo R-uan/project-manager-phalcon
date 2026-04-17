@@ -4,6 +4,7 @@ declare (strict_types = 1);
 use App\Library\JwtService;
 use App\Repositories\Interfaces\IUserRepository;
 use App\Repositories\UserRepository;
+use App\Services\AuthService;
 use App\Services\UserService;
 use Phalcon\Flash\Direct as Flash;
 use Phalcon\Html\Escaper;
@@ -43,6 +44,7 @@ $di->setShared('view', function () {
   $view = new View();
   $view->setDI($this);
   $view->setViewsDir($config->application->viewsDir);
+  $view->setLayout('main');
 
   $view->registerEngines([
     '.volt'  => function ($view) {
@@ -125,7 +127,7 @@ $di->setShared('session', function () {
 });
 
 $di->setShared('router', function () {
-  return include __DIR__ . '/routes.php';
+  return include __DIR__ . '/router.php';
 });
 
 // Repositories
@@ -143,5 +145,13 @@ $di->setShared('userService', function () use ($di) {
   return new UserService(
     $di->get(IUserRepository::class),
     $di->get('jwt')
+  );
+});
+
+$di->setShared('authService', function () use ($di) {
+  return new AuthService(
+    $di->get(IUserRepository::class),
+    $di->get('security'),
+    $di->get('session')
   );
 });
