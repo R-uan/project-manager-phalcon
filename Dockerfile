@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
 
 # instalar extensões postgres
 RUN docker-php-ext-install pdo_pgsql pgsql
+RUN mkdir -p /var/www/cache && chown -R www-data:www-data /var/www/cache
 
 # instalar phalcon
 RUN git clone --depth=1 --branch v5.3.0 https://github.com/phalcon/cphalcon.git \

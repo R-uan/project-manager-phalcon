@@ -43,7 +43,7 @@ class FffAssignedProjectMembersMigration_100 extends Migration {
     $this->getConnection()->execute("
       CREATE TABLE
         assigned_project_members (
-            id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             project_id INT NOT NULL,
             membership_id INT NOT NULL
         )

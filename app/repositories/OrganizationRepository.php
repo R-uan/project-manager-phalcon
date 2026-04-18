@@ -13,7 +13,7 @@ class OrganizationRepository implements IOrganizationRepository {
     private MembershipRepository $membershipRepository,
   ) {}
 
-  public function create(Organization $org): bool {
+  public function save(Organization $org): bool {
     return $org->save();
   }
 
@@ -27,14 +27,14 @@ class OrganizationRepository implements IOrganizationRepository {
     /** @var Organization|null */
     return Organization::findFirst([
       'condition' => 'id :id:',
-      'bind'      => ['id', $id],
+      'bind'      => ['id' => $id],
     ]);
   }
 
   public function addMember(User $user, Organization $org): bool {
     $membership = $this->membershipRepository->findMembership($org->id, $user->id);
     if ($membership !== null) {throw new \Exception("Already a member");}
-    $new_membership = new Membership($user->id, $org->id, "MEMBER");
+    $new_membership = Membership::from($user->id, $org->id, "MEMBER");
     return $new_membership->save();
   }
 

@@ -4,7 +4,7 @@ declare (strict_types = 1);
 use Dotenv\Dotenv;
 use Phalcon\Di\FactoryDefault;
 
-error_reporting(E_ALL);
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 
 define('BASE_PATH', dirname(__DIR__));
 define('APP_PATH', BASE_PATH . '/app');

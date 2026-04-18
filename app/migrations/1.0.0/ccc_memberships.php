@@ -48,7 +48,7 @@ class CccMembershipsMigration_100 extends Migration {
     $this->getConnection()->execute("
       CREATE TABLE
         memberships (
-            id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             role VARCHAR(20) NOT NULL,
             user_id INT NOT NULL,
             organization_id INT NOT NULL

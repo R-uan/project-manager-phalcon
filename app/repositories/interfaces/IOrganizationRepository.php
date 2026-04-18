@@ -6,7 +6,7 @@ use App\Models\User;
 use Phalcon\Mvc\Model\ResultsetInterface;
 
 interface IOrganizationRepository {
-  public function create(Organization $org): bool;
+  public function save(Organization $org): bool;
 
   public function findAll(): ResultsetInterface;
   public function findById(int $id): ?Organization;

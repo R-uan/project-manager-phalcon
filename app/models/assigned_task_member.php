@@ -1,6 +1,6 @@
 <?php
 namespace App\Models;
-use Plalcon\Mvc\Model;
+use Phalcon\Mvc\Model;
 
 class AssignedTaskMember extends Model {
   public $id;                 // int

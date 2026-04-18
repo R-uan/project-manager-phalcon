@@ -43,8 +43,9 @@ class BbbOrganizationsMigration_100 extends Migration {
     $this->getConnection()->execute("
       CREATE TABLE
         organizations (
-            id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             name VARCHAR(50) NOT NULL,
+            is_public BOOLEAN NOT NULL,
             created_at TIMESTAMPTZ
         )
     ");

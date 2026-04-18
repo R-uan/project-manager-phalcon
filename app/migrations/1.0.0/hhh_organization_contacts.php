@@ -51,7 +51,7 @@ class HhhOrganizationContactsMigration_100 extends Migration {
     $this->getConnection()->execute("
       CREATE TABLE
         organization_contacts (
-          id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+          id SERIAL PRIMARY KEY,
           website VARCHAR(100),
           email VARCHAR(100),
           number VARCHAR(20),

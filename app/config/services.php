@@ -2,7 +2,11 @@
 declare (strict_types = 1);
 
 use App\Library\JwtService;
+use App\Repositories\Interfaces\IMembershipRepository;
+use App\Repositories\Interfaces\IOrganizationRepository;
 use App\Repositories\Interfaces\IUserRepository;
+use App\Repositories\MembershipRepository;
+use App\Repositories\OrganizationRepository;
 use App\Repositories\UserRepository;
 use App\Services\AuthService;
 use App\Services\UserService;
@@ -55,6 +59,8 @@ $di->setShared('view', function () {
       $volt->setOptions([
         'path'      => $config->application->cacheDir,
         'separator' => '_',
+        'always'    => true,
+        'stat'      => true,
       ]);
 
       return $volt;
@@ -135,10 +141,24 @@ $di->set(IUserRepository::class, function () {
   return new UserRepository();
 });
 
+$di->set(IMembershipRepository::class, function () {
+  return new MembershipRepository();
+});
+
+$di->set(IOrganizationRepository::class, function () use ($di) {
+  return new OrganizationRepository(
+    $di->get(IMembershipRepository::class)
+  );
+});
+
 // Services
 $di->setShared('jwt', function () {
   $config = $this->getConfig();
   return new JwtService($config);
+});
+
+$di->setShared(Phalcon\Mvc\Model\Transaction\Manager::class, function () {
+  return new Phalcon\Mvc\Model\Transaction\Manager();
 });
 
 $di->setShared('userService', function () use ($di) {
@@ -153,5 +173,12 @@ $di->setShared('authService', function () use ($di) {
     $di->get(IUserRepository::class),
     $di->get('security'),
     $di->get('session')
+  );
+});
+
+$di->setShared('organizationService', function () use ($di) {
+  return new OrganizationService(
+    $di->get(IOrganizationRepository::class),
+    $di->get(IMembershipRepository::class)
   );
 });

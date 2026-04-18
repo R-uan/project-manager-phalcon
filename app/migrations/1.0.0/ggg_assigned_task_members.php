@@ -43,7 +43,7 @@ class GggAssignedTaskMembersMigration_100 extends Migration {
     $this->getConnection()->execute("
       CREATE TABLE
         assigned_task_members (
-            id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             task_id INT NOT NULL,
             assigned_member_id INT NOT NULL
         )

@@ -12,8 +12,8 @@ class UserRepository implements IUserRepository {
   public function findById(int $id): ?User {
     /** @var User|null */
     return User::findFirst([
-      'condition' => 'id = :id:',
-      'bind'      => ['id' => $id],
+      'conditions' => 'id = :id:',
+      'bind'       => ['id' => $id],
     ]) ?: null;
   }
 

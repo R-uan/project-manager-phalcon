@@ -5,6 +5,9 @@ use App\Models\Membership;
 use App\Repositories\Interfaces\IMembershipRepository;
 
 class MembershipRepository implements IMembershipRepository {
+  public function save(Membership $membership): bool {
+    return $membership->save();
+  }
   public function findMembership(int $org_id, int $user_id): ?Membership {
     /** @var Membership|null */
     return Membership::findFirst([

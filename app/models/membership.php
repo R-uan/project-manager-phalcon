@@ -3,17 +3,23 @@ namespace App\Models;
 use Phalcon\Mvc\Model;
 
 class Membership extends Model {
-  public $id; // int
+  public $id;
+  public $user_id;
+  public $role;
+  public $organization_id;
 
-  public function __construct(
-    public int $user_id,
-    public int $organization_id,
-    public $role, // string
-  ) {}
+  public static function from(int $userId, int $organizationId, string $role): self {
+    $membership                  = new self();
+    $membership->user_id         = $userId;
+    $membership->role            = $role;
+    $membership->organization_id = $organizationId;
+    return $membership;
+  }
 
   public function initialize() {
     $this->setSchema("public");
     $this->setSource("memberships");
+    $this->skipAttributesOnCreate(['id']);
 
     // User that is member
     $this->belongsTo(

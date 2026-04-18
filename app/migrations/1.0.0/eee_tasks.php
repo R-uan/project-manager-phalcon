@@ -58,7 +58,7 @@ class EeeTasksMigration_100 extends Migration {
     $this->getConnection()->execute("
       CREATE TABLE
         tasks (
-            id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             title VARCHAR(50) NOT NULL,
             description VARCHAR(500),
             created_at TIMESTAMPTZ,

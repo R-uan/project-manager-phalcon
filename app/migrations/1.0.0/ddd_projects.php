@@ -58,7 +58,7 @@ class DddProjectsMigration_100 extends Migration {
     $this->getConnection()->execute("
       CREATE TABLE
         projects (
-            id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             name VARCHAR(50) NOT NULL,
             description VARCHAR(500),
             deadline TIMESTAMPTZ,
