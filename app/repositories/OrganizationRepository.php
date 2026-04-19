@@ -26,7 +26,7 @@ class OrganizationRepository implements IOrganizationRepository {
   public function findById(int $id): ?Organization {
     /** @var Organization|null */
     return Organization::findFirst([
-      'condition' => 'id :id:',
+      'condition' => 'id = :id:',
       'bind'      => ['id' => $id],
     ]);
   }
@@ -42,5 +42,12 @@ class OrganizationRepository implements IOrganizationRepository {
     $membership = $this->membershipRepository->findMembership($org->id, $user->id);
     if ($membership === null) {throw new \Exception("Not a member");}
     return $membership->delete();
+  }
+
+  public function findMembers(int $orgId): ResultsetInterface {
+    return Membership::find([
+      'conditions' => 'organization_id = :orgId:',
+      'bind'       => ['orgId' => $orgId],
+    ]);
   }
 }

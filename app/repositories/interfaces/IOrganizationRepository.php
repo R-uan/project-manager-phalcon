@@ -11,6 +11,7 @@ interface IOrganizationRepository {
   public function findAll(): ResultsetInterface;
   public function findById(int $id): ?Organization;
 
+  public function findMembers(int $orgId): ResultsetInterface;
   public function addMember(User $user, Organization $org): bool;
   public function removeMember(User $user, Organization $org): bool;
 }

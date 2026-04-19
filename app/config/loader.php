@@ -8,4 +8,13 @@ $loader = new \Phalcon\Autoload\Loader();
 $loader->setDirectories([
   $config->application->controllersDir,
   $config->application->modelsDir,
-])->register();
+]);
+
+$loader->setNamespaces([
+  'App\Services'     => __DIR__ . '/../app/services/',
+  'App\Repositories' => __DIR__ . '/../app/repositories/',
+  'App\Dto\Request'  => __DIR__ . '/../app/dto/request',
+  'App\Dto\Response' => __DIR__ . '/../app/dto/response',
+]);
+
+$loader->register();

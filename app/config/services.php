@@ -136,16 +136,30 @@ $di->setShared('router', function () {
   return include __DIR__ . '/router.php';
 });
 
+$di->setShared(Phalcon\Mvc\Model\Transaction\Manager::class, function () {
+  return new Phalcon\Mvc\Model\Transaction\Manager();
+});
+
 // Repositories
-$di->set(IUserRepository::class, function () {
+
+$di->setShared('userRepository', function () {
   return new UserRepository();
 });
 
-$di->set(IMembershipRepository::class, function () {
-  return new MembershipRepository();
+$di->setShared(IUserRepository::class, function () use ($di) {
+  return $di->get('userRepository');
 });
 
-$di->set(IOrganizationRepository::class, function () use ($di) {
+$di->setShared('membershipRepository', function () use ($di) {
+  return new MembershipRepository(
+    $di->get('modelsManager'));
+});
+
+$di->setShared(IMembershipRepository::class, function () use ($di) {
+  return $di->get('membershipRepository');
+});
+
+$di->setShared(IOrganizationRepository::class, function () use ($di) {
   return new OrganizationRepository(
     $di->get(IMembershipRepository::class)
   );
@@ -157,14 +171,10 @@ $di->setShared('jwt', function () {
   return new JwtService($config);
 });
 
-$di->setShared(Phalcon\Mvc\Model\Transaction\Manager::class, function () {
-  return new Phalcon\Mvc\Model\Transaction\Manager();
-});
-
 $di->setShared('userService', function () use ($di) {
   return new UserService(
     $di->get(IUserRepository::class),
-    $di->get('jwt')
+    $di->get(IMembershipRepository::class)
   );
 });
 
@@ -179,6 +189,12 @@ $di->setShared('authService', function () use ($di) {
 $di->setShared('organizationService', function () use ($di) {
   return new OrganizationService(
     $di->get(IOrganizationRepository::class),
+    $di->get(IMembershipRepository::class)
+  );
+});
+
+$di->setShared('membershipService', function () use ($di) {
+  return new MembershipService(
     $di->get(IMembershipRepository::class)
   );
 });

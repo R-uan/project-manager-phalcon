@@ -3,6 +3,7 @@
 use App\Dto\Request\CreateOrganizationRequestDto;
 use App\Models\Membership;
 use App\Models\Organization;
+use App\Models\OrganizationContact;
 use App\Models\User;
 use App\Repositories\Interfaces\IMembershipRepository;
 use App\Repositories\Interfaces\IOrganizationRepository;
@@ -40,12 +41,24 @@ class OrganizationService implements IOrganizationService {
         throw new \Exception("Failed to create membership");
       }
 
+      $contacts = OrganizationContact::from($organization->id, $request->contactEmail);
+      $contacts->setTransaction($transaction);
+
+      // im not making a whole repository for one function.
+      if ($contacts->save() === false) {
+        throw new \Exception("Failed to create membership");
+      }
+
       $transaction->commit();
       return $organization;
     } catch (\Throwable $th) {
       $transaction->rollback($th->getMessage());
       throw $th;
     }
+  }
+
+  public function findOrganizationMembers(int $orgId): ResultsetInterface {
+    return $this->organizationRepository->findMembers($orgId);
   }
 
   public function addMember(): bool {

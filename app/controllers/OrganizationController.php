@@ -3,7 +3,6 @@
 use App\Dto\Request\CreateOrganizationRequestDto;
 use App\Models\Organization;
 use App\Models\User;
-use ControllerBase;
 
 class OrganizationController extends ControllerBase {
   public function indexAction() {
@@ -11,11 +10,20 @@ class OrganizationController extends ControllerBase {
     $this->view->setVar('organizations', $organizations);
   }
 
+  public function membersAction() {
+    if ($this->request->isGet()) {
+      try {
+        $orgId   = $this->dispatcher->getParam('orgId', 'int');
+        $members = $this->organizationService->findOrganizationMembers($orgId);
+        $this->view->setVar('members', $members);
+      } catch (\Throwable $th) {
+        throw $th;
+      }
+    }
+  }
+
   public function createAction() {
-    $this->assets
-      ->collection('page-css')
-      ->addCss('css/app.css')
-      ->addCss('css/organization.css');
+    $this->assets->addCss('css/organization.css');
 
     if (! $this->session->get('auth_user_id')) {
       $this->flashSession->error("Authentication necessary");
