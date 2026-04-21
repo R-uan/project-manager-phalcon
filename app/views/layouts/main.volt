@@ -10,6 +10,14 @@
 	</head>
 
 	<body class="h-full">
+		<header">
+			<ul>
+				<li>
+					<a href="/organization">Organizations</a>
+					<a href="/user/profile">Profile</a>
+				</li>
+			</ul>
+		</header>
 		{{ content() }}
 	</body>
 

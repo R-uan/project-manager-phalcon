@@ -24,7 +24,6 @@ $router->add('/auth/logout', [
 ]);
 
 // Organization Endpoints
-
 $router->add('/organization', [
   'controller' => 'organization',
   'action'     => 'index',
@@ -35,7 +34,7 @@ $router->add('/organization/create', [
   'action'     => 'create',
 ]);
 
-$router->addGet('/organization/{orgId}/members', [
+$router->add('/organization/{orgId}/members', [
   'controller' => 'organization',
   'action'     => 'members',
 ]);

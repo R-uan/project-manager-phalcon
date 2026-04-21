@@ -33,14 +33,10 @@
 	<ul>
 		{% for membership in profile.memberships %}
 			<li>
+				{{membership.orgId}}
 				<strong>{{ membership.orgName }}</strong>
 				({{ membership.role }})<br>
-				Email:
-				{{ membership.orgEmail }}
-				{% if membership.orgWebsite %}
-					| Website:
-					{{ membership.orgWebsite }}
-				{% endif %}
+
 			</li>
 		{% endfor %}
 	</ul>

@@ -20,6 +20,34 @@ class OrganizationController extends ControllerBase {
         throw $th;
       }
     }
+
+    if ($this->request->isPost()) {
+      try {
+        $actorUserId = $this->session->get('auth_user_id');
+        if (isset($actorUserId) === false) {
+          $this->flashSession->error("Authentication required.");
+          return $this->response->redirect('/auth/login');
+        }
+
+        $targetUserEmail = $this->request->getPost('targetEmail');
+        if (isset($targetUserEmail) === false) {
+          $this->flashSession->error("Target user required");
+          return;
+        }
+
+        $orgId = $this->dispatcher->getParam('orgId', 'int');
+        if ($this->organizationService->inviteUser($actorUserId, $orgId, $targetUserEmail) === false) {
+          $this->flashSession->error("Could not invite member.");
+          return;
+        }
+
+        $this->flashSession->success("Member invited.");
+        return $this->response->redirect('/organization/' . $orgId . '/members');
+      } catch (\Throwable $th) {
+        $this->flashSession->error($th->getMessage());
+        return $this->response->redirect('/organization/' . $orgId . '/members');
+      }
+    }
   }
 
   public function createAction() {
