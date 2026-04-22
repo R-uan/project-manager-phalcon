@@ -13,64 +13,7 @@ class AaaUsersMigration_100 extends Migration {
    * @return void
    * @throws Exception
    */
-  public function morph(): void {
-    /* $this->morphTable('users', [
-      'columns' => [
-        new Column(
-          'id',
-          [
-            'type'     => Column::TYPE_INTEGER,
-            'primary'  => true,
-            'notNull'  => true,
-            'identity' => true,
-          ]
-        ),
-        new Column(
-          'email',
-          [
-            'type'    => Column::TYPE_VARCHAR,
-            'notNull' => true,
-            'size'    => 255,
-          ]
-        ),
-        new Column(
-          'password',
-          [
-            'type'    => Column::TYPE_VARCHAR,
-            'notNull' => true,
-            'size'    => 255,
-          ]
-        ),
-        new Column(
-          'first_name',
-          [
-            'type'    => Column::TYPE_VARCHAR,
-            'notNull' => false,
-            'size'    => 100,
-          ]
-        ),
-        new Column(
-          'last_name',
-          [
-            'type'    => Column::TYPE_VARCHAR,
-            'notNull' => false,
-            'size'    => 100,
-          ]
-        ),
-        new Column(
-          'created_at',
-          [
-            'type'    => Column::TYPE_TIMESTAMP,
-            'default' => "CURRENT_TIMESTAMP",
-            'notNull' => true,
-          ]
-        ),
-      ],
-      'indexes' => [
-        new Index('users_unique_email', ['email'], 'UNIQUE'),
-      ],
-    ]); */
-  }
+  public function morph(): void {}
 
   /**
    * Run the migrations

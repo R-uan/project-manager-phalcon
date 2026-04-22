@@ -13,26 +13,7 @@ class BbbOrganizationsMigration_100 extends Migration {
    * @return void
    * @throws Exception
    */
-  public function morph(): void {
-    /* $this->morphTable('organizations', [
-      'columns' => [
-        new Column('id', [
-          'type'          => Column::TYPE_INTEGER,
-          'primary'       => true,
-          'autoIncrement' => true,
-          'notNull'       => true,
-        ]),
-        new Column('name', [
-          'type'    => Column::TYPE_VARCHAR,
-          'size'    => 255,
-          'notNull' => true,
-        ]),
-        new Column('created_at', [
-          'type' => Column::TYPE_TIMESTAMPTZ,
-        ]),
-      ],
-    ]); */
-  }
+  public function morph(): void {}
 
   /**
    * Run the migrations
@@ -46,6 +27,7 @@ class BbbOrganizationsMigration_100 extends Migration {
             id SERIAL PRIMARY KEY,
             name VARCHAR(50) NOT NULL,
             is_public BOOLEAN NOT NULL,
+            location VARCHAR(20),
             created_at TIMESTAMPTZ
         )
     ");

@@ -13,26 +13,7 @@ class FffAssignedProjectMembersMigration_100 extends Migration {
    * @return void
    * @throws Exception
    */
-  public function morph(): void {
-    /* $this->morphTable('assigned_project_members', [
-      'columns' => [
-        new Column('id', [
-          'type'          => Column::TYPE_INTEGER,
-          'autoIncrement' => true,
-          'primary'       => true,
-          'notNull'       => true,
-        ]),
-        new Column('project_id', [
-          'type'    => Column::TYPE_INTEGER,
-          'notNull' => true,
-        ]),
-        new Column('membership_id', [
-          'type'    => Column::TYPE_INTEGER,
-          'notNull' => true,
-        ]),
-      ],
-    ]);*/
-  }
+  public function morph(): void {}
 
   /**
    * Run the migrations

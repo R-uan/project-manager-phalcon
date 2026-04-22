@@ -3,9 +3,19 @@ namespace App\Models;
 use Phalcon\Mvc\Model;
 
 class AssignedProjectMember extends Model {
-  public $id;            // int
-  public $project_id;    // int
-  public $membership_id; // int
+  public $id;           // int
+  public $projectId;    // int
+  public $membershipId; // int
+  public $createdAt;
+
+  public function columnMap(): array {
+    return [
+      'id'            => 'id',
+      'project_id'    => 'projectId',
+      'membership_id' => 'membershipId',
+      'created_at'    => 'createdAt',
+    ];
+  }
 
   public function initialize() {
     $this->setSchema("public");

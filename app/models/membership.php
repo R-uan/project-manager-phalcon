@@ -4,16 +4,27 @@ use Phalcon\Mvc\Model;
 
 class Membership extends Model {
   public $id;
-  public $user_id;
   public $role;
-  public $organization_id;
+  public $userId;
+  public $createdAt;
+  public $organizationId;
 
   public static function from(int $userId, int $organizationId, string $role): self {
-    $membership                  = new self();
-    $membership->user_id         = $userId;
-    $membership->role            = $role;
-    $membership->organization_id = $organizationId;
+    $membership                 = new self();
+    $membership->userId         = $userId;
+    $membership->role           = $role;
+    $membership->organizationId = $organizationId;
     return $membership;
+  }
+
+  public function columnMap(): array {
+    return [
+      'id'              => 'id',
+      'role'            => 'role',
+      'user_id'         => 'userId',
+      'created_at'      => 'createdAt',
+      'organization_id' => 'organizationId',
+    ];
   }
 
   public function initialize() {

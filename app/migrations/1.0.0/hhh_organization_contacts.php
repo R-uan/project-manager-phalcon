@@ -13,34 +13,7 @@ class HhhOrganizationContactsMigration_100 extends Migration {
    * @return void
    * @throws Exception
    */
-  public function morph(): void {
-    /* $this->morphTable('organization_contacts', [
-      'columns' => [
-        new Column('id', [
-          'type'          => Column::TYPE_INTEGER,
-          'primary'       => true,
-          'autoIncrement' => true,
-          'notNull'       => true,
-        ]),
-        new Column('website', [
-          'type' => Column::TYPE_VARCHAR,
-          'size' => 100,
-        ]),
-        new Column('email', [
-          'type' => Column::TYPE_VARCHAR,
-          'size' => 100,
-        ]),
-        new Column('number', [
-          'type' => Column::TYPE_VARCHAR,
-          'size' => 20,
-        ]),
-        new Column('organization_id', [
-          'type'    => Column::TYPE_INTEGER,
-          'notNull' => true,
-        ]),
-      ],
-    ]); */
-  }
+  public function morph(): void {}
 
   /**
    * Run the migrations

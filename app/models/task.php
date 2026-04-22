@@ -6,14 +6,27 @@ class Task extends Model {
   public $id;          // int
   public $title;       // string
   public $description; // string
-  public $created_at;  // date
+  public $createdAt;   // date
   public $startline;   // date
   public $deadline;    // date
-  public $project_id;  // int
+  public $projectId;   // int
+
+  public function columnMap(): array {
+    return [
+      'id'          => 'id',
+      'title'       => 'title',
+      'description' => 'description',
+      'created_at'  => 'createdAt',
+      'startline'   => 'startline',
+      'deadline'    => 'deadline',
+      'project_id'  => 'projectId',
+    ];
+  }
 
   public function initialize() {
     $this->setSource("tasks");
     $this->setSchema("public");
+    $this->skipAttributesOnCreate(['id']);
 
     $this->belongsTo(
       "project_id",

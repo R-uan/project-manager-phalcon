@@ -13,41 +13,7 @@ class DddProjectsMigration_100 extends Migration {
    * @return void
    * @throws Exception
    */
-  public function morph(): void {
-    /* $this->morphTable('projects', [
-      'columns' => [
-        new Column('id', [
-          'type'          => Column::TYPE_INTEGER,
-          'primary'       => true,
-          'autoIncrement' => true,
-          'notNull'       => true,
-        ]),
-        new Column('name', [
-          'type' => Column::TYPE_VARCHAR,
-          'size' => 50,
-        ]),
-        new Column('description', [
-          'type' => Column::TYPE_VARCHAR,
-          'size' => 500,
-        ]),
-        new Column('created_at', [
-          'type'    => Column::TYPE_TIMESTAMP,
-          'default' => "CURRENT_TIMESTAMP",
-          'notNull' => true,
-        ]),
-        new Column('startline', [
-          'type' => Column::TYPE_TIMESTAMPTZ,
-        ]),
-        new Column('deadline', [
-          'type' => Column::TYPE_TIMESTAMPTZ,
-        ]),
-        new Column('organization_id', [
-          'type'    => Column::TYPE_INTEGER,
-          'notNull' => true,
-        ]),
-      ],
-    ]); */
-  }
+  public function morph(): void {}
 
   /**
    * Run the migrations

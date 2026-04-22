@@ -7,14 +7,25 @@ use Phalcon\Mvc\Model;
 class Organization extends Model {
   public $id;
   public $name;
-  public $is_public;
-  public $created_at;
+  public $location;
+  public $isPublic;
+  public $createdAt;
 
   public static function fromRequest(CreateOrganizationRequestDto $request) {
     $org            = new Organization();
     $org->name      = $request->organizationName;
     $org->is_public = $request->isPublic;
     return $org;
+  }
+
+  public function columnMap(): array {
+    return [
+      'id'         => 'id',
+      'name'       => 'name',
+      'is_public'  => 'isPublic',
+      'location'   => 'location',
+      'created_at' => 'createdAt',
+    ];
   }
 
   public function initialize() {

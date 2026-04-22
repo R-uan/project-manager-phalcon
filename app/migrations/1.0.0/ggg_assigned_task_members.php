@@ -13,26 +13,7 @@ class GggAssignedTaskMembersMigration_100 extends Migration {
    * @return void
    * @throws Exception
    */
-  public function morph(): void {
-    /* $this->morphTable('assigned_task_members', [
-      'columns' => [
-        new Column('id', [
-          'type'          => Column::TYPE_INTEGER,
-          'autoIncrement' => true,
-          'primary'       => true,
-          'notNull'       => true,
-        ]),
-        new Column('task_id', [
-          'type'    => Column::TYPE_INTEGER,
-          'notNull' => true,
-        ]),
-        new Column('assigned_member_id', [
-          'type'    => Column::TYPE_INTEGER,
-          'notNull' => true,
-        ]),
-      ],
-    ]); */
-  }
+  public function morph(): void {}
 
   /**
    * Run the migrations

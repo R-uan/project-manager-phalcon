@@ -4,19 +4,16 @@ namespace App\Models;
 use Phalcon\Mvc\Model;
 
 class OrganizationInvite extends Model {
-                          // primary key = invitee_user_id and organization_id;
   public $inviterUserId;  // The one that invited
   public $inviteeUserId;  // The one invited
   public $organizationId; // to where
-  public $created_at;
-  public $active;
+  public $createdAt;
 
   public static function from(int $invitee, int $inviter, int $orgId): self {
     $invite                 = new self();
     $invite->inviterUserId  = $inviter;
     $invite->inviteeUserId  = $invitee;
     $invite->organizationId = $orgId;
-    $invite->active         = true;
     return $invite;
   }
 
@@ -26,9 +23,9 @@ class OrganizationInvite extends Model {
       'inviter_user_id' => 'inviterUserId',
       'organization_id' => 'organizationId',
       'created_at'      => 'createdAt',
-      'active'          => 'active',
     ];
   }
+
   public function initialize() {
     $this->setSchema('public');
     $this->setSource("organization_invites");

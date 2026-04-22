@@ -8,12 +8,22 @@ class OrganizationContact extends Model {
   public $email;
   public $number;
   public $website;
-  public $organization_id;
+  public $organizationId;
+
+  public function columnMap(): array {
+    return [
+      'id'              => 'id',
+      'email'           => 'email',
+      'number'          => 'number',
+      'website'         => 'website',
+      'organization_id' => 'organizationId',
+    ];
+  }
 
   public static function from(int $orgId, string $email): self {
-    $contacts                  = new self();
-    $contacts->email           = $email;
-    $contacts->organization_id = $orgId;
+    $contacts                 = new self();
+    $contacts->email          = $email;
+    $contacts->organizationId = $orgId;
     return $contacts;
   }
 
