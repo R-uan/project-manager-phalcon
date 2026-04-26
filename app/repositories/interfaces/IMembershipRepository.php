@@ -6,9 +6,8 @@ use App\Models\Membership;
 
 interface IMembershipRepository {
   public function save(Membership $membership): bool;
-  /** @return MembershipView[] */
+  public function delete(int $orgId, int $userId): bool;
   public function findUserMemberships(int $userId): array;
-  /** @return MembershipView[] */
-  public function findOrganizationMembers(int $orgId): array;
+  public function findOrganizationMemberships(int $orgId): array;
   public function findMembership(int $orgId, int $userId): ?MembershipView;
 }

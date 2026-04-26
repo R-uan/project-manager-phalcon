@@ -1,5 +1,17 @@
-*>header {
-  height: 50px;
-  width: 50px;
+[required="required"]::after {
+  content: " *";
+  color: #e94d45;
+  font-weight: bold;
+}
+
+header {
+  gap: 10px;
+  margin: 5px;
+  height: 40px;
+  display: flex;
+  padding: 4px 8px;
+  align-items: center;
+  flex-direction: row;
+  width: calc(100% - 10px);
   outline: 1px solid red;
 }

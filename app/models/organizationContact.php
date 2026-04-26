@@ -8,7 +8,7 @@ class OrganizationContact extends Model {
   public $email;
   public $number;
   public $website;
-  public $organizationId;
+  public $orgId;
 
   public function columnMap(): array {
     return [
@@ -16,14 +16,14 @@ class OrganizationContact extends Model {
       'email'           => 'email',
       'number'          => 'number',
       'website'         => 'website',
-      'organization_id' => 'organizationId',
+      'organization_id' => 'orgId',
     ];
   }
 
   public static function from(int $orgId, string $email): self {
-    $contacts                 = new self();
-    $contacts->email          = $email;
-    $contacts->organizationId = $orgId;
+    $contacts        = new self();
+    $contacts->email = $email;
+    $contacts->orgId = $orgId;
     return $contacts;
   }
 

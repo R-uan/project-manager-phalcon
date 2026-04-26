@@ -7,13 +7,13 @@ class Membership extends Model {
   public $role;
   public $userId;
   public $createdAt;
-  public $organizationId;
+  public $orgId;
 
-  public static function from(int $userId, int $organizationId, string $role): self {
-    $membership                 = new self();
-    $membership->userId         = $userId;
-    $membership->role           = $role;
-    $membership->organizationId = $organizationId;
+  public static function from(int $userId, int $orgId, string $role): self {
+    $membership         = new self();
+    $membership->userId = $userId;
+    $membership->role   = $role;
+    $membership->orgId  = $orgId;
     return $membership;
   }
 
@@ -23,7 +23,7 @@ class Membership extends Model {
       'role'            => 'role',
       'user_id'         => 'userId',
       'created_at'      => 'createdAt',
-      'organization_id' => 'organizationId',
+      'organization_id' => 'orgId',
     ];
   }
 

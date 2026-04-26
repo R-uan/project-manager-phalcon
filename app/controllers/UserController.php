@@ -1,28 +1,10 @@
 <?php
 
-use App\Dto\Request\CreateUserRequestDto;
 use App\Dto\Response\ProfileView;
 use App\Models\User;
 
 class UserController extends ControllerBase {
-  public function registerAction() {
-    $body     = $this->request->getJsonRawBody(true);
-    $request  = CreateUserRequestDto::fromArray($body);
-    $validate = $request->validate();
-
-    if ($validate !== true) {
-      return $this->response
-        ->setStatusCode(400)
-        ->setJsonContent(['errors' => $validate]);
-    }
-
-    $response = $this->userService->createUser($request);
-    return $this->response->setStatusCode(200)->setJsonContent([
-      'message' => 'Sucessfully registered user.',
-      'data'    => $response,
-    ]);
-  }
-
+  // /user/profile
   public function profileAction() {
     $userId = (int)$this->session->get('auth_user_id');
 
@@ -45,26 +27,43 @@ class UserController extends ControllerBase {
     $this->view->setVar('profile', $profile);
   }
 
-  // /user/profile/memberships
-  public function membershipsAction() {
-    $userId = (int)$this->session->get('auth_user_id');
+  // /user/organizations
+  public function organizationsAction() {
+    try {
+      $userId = (int)$this->session->get('auth_user_id');
 
-    if (! $userId) {
-      $this->flashSession->error("Authentication necessary");
-      return $this->response->redirect('/auth/login');
-    }
+      if (isset($userId) === false) {
+        $this->flashSession->error("Authentication necessary");
+        return $this->response->redirect('/auth/login');
+      }
 
-    $user = $this->userRepository->findById($userId);
+      $user = $this->userService->findUserById($userId);
 
-    if ($user === null) {
-      $this->flashSession->error("Authentication necessary");
-      return $this->response->redirect('/auth/login');
-    }
+      if ($user === null) {
+        $this->flashSession->error("Authentication necessary");
+        return $this->response->redirect('/auth/login');
+      }
 
-    if ($this->request->isGet()) {
-      $memberships = $this->membershipService->findUserMemberships($userId);
-      $this->view->setVar('memberships', $memberships);
-      $this->view->pick('user/memberships');
+      if ($this->request->isGet()) {
+        $memberships = $this->membershipService->findUserMemberships($userId);
+        $invitations = $this->inviteService->findUserInvitations($userId);
+
+        $this->view->setVar('membershipsJson', json_encode(array_map(fn($m) => [
+          'orgId'   => $m->orgId,
+          'orgName' => $m->orgName,
+          'role'    => $m->role,
+        ], $memberships)));
+
+        $this->view->setVar('invitationsJson', json_encode(array_map(fn($i) => [
+          'orgId'       => $i->orgId,
+          'orgName'     => $i->orgName,
+          'inviterName' => $i->inviterName,
+        ], $invitations)));
+
+        $this->view->pick('user/organizations');
+      }
+    } catch (\Throwable $th) {
+      $this->flashSession->error($th->getMessage());
     }
   }
 

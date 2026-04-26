@@ -14,38 +14,52 @@ class MembershipRepository implements IMembershipRepository {
     return $membership->save();
   }
 
+  public function delete(int $orgId, int $userId): bool {
+    $membership = Membership::findFirst([
+      'conditions' => 'orgId = :orgId: AND userId = :userId:',
+      'bind'       => [
+        'orgId'  => $orgId,
+        'userId' => $userId,
+      ],
+    ]);
+
+    if (isset($membership) === false) {
+      throw new \Exception("User membership not found.");
+    }
+
+    return $membership->delete();
+  }
+
+  /** @return MembershipView[] */
   public function findMembership(int $orgId, int $userId): ?MembershipView {
-    /** @return Membership|null */
     $result = $this->modelsManager->createQuery('
       SELECT
-        m.role, m.user_id,
-        u.first_name, u.last_name,
-        o.id AS org_id, o.name AS org_name,
+        m.role, m.userId,
+        u.firstName, u.lastName,
+        o.id AS orgId, o.name AS orgName,
         oc.website, oc.email
       FROM App\Models\Membership m
-      LEFT JOIN App\Models\User u ON u.id = m.user_id
-      LEFT JOIN App\Models\Organization o ON o.id = m.organization_id
-      LEFT JOIN App\Models\OrganizationContact oc ON oc.organization_id = o.id
-      WHERE m.user_id = :userId: AND m.organization_id = :orgId:
+      LEFT JOIN App\Models\User u ON u.id = m.userId
+      LEFT JOIN App\Models\Organization o ON o.id = m.orgId
+      LEFT JOIN App\Models\OrganizationContact oc ON oc.orgId = o.id
+      WHERE m.userId = :userId: AND m.orgId = :orgId:
     ')->execute(['userId' => $userId, 'orgId' => $orgId])->getFirst();
     return $result !== null ? MembershipView::fromArray($result) : null;
   }
 
-  /**
-   * @return MembershipView[]
-   */
+  /** @return MembershipView[] */
   public function findUserMemberships(int $userId): array {
     $memberships = $this->modelsManager->createQuery('
       SELECT
-        m.role, m.user_id,
-        u.first_name, u.last_name,
-        o.id AS org_id, o.name AS org_name,
+        m.role, m.userId,
+        u.firstName, u.lastName,
+        o.id AS orgId, o.name AS orgName,
         oc.website, oc.email
       FROM App\Models\Membership m
-      LEFT JOIN App\Models\User u ON u.id = m.user_id
-      LEFT JOIN App\Models\Organization o ON o.id = m.organization_id
-      LEFT JOIN App\Models\OrganizationContact oc ON oc.organization_id = o.id
-      WHERE m.user_id = :userId:
+      LEFT JOIN App\Models\User u ON u.id = m.userId
+      LEFT JOIN App\Models\Organization o ON o.id = m.orgId
+      LEFT JOIN App\Models\OrganizationContact oc ON oc.orgId = o.id
+      WHERE m.userId = :userId:
     ')->execute(['userId' => $userId]);
 
     return array_map(function ($row) {
@@ -54,18 +68,18 @@ class MembershipRepository implements IMembershipRepository {
   }
 
   /** @return MembershipView[] */
-  public function findOrganizationMembers(int $orgId): array {
+  public function findOrganizationMemberships(int $orgId): array {
     $memberships = $this->modelsManager->createQuery('
       SELECT
-        m.role, m.user_id,
-        u.first_name, u.last_name,
-        o.id AS org_id, o.name AS org_name,
+        m.role, m.userId,
+        u.firstName, u.lastName,
+        o.id AS orgId, o.name AS orgName,
         oc.website, oc.email
       FROM App\Models\Membership m
-      LEFT JOIN App\Models\User u ON u.id = m.user_id
-      LEFT JOIN App\Models\Organization o ON o.id = m.organization_id
-      LEFT JOIN App\Models\OrganizationContact oc ON oc.organization_id = o.id
-      WHERE m.organization_id = :orgId:
+      LEFT JOIN App\Models\User u ON u.id = m.userId
+      LEFT JOIN App\Models\Organization o ON o.id = m.orgId
+      LEFT JOIN App\Models\OrganizationContact oc ON oc.orgId = o.id
+      WHERE m.orgId = :orgId:
     ')->execute(['orgId' => $orgId]);
 
     return array_map(function ($row) {

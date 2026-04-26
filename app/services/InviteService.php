@@ -1,55 +1,78 @@
 <?php
 
+use App\Dto\Response\InvitationView;
+use App\Dto\Response\MembershipView;
 use App\Models\Membership;
-use App\Models\Organization;
 use App\Models\OrganizationInvite;
-use App\Models\User;
 use App\Repositories\Interfaces\IInviteRepository;
-use App\Repositories\Interfaces\IMembershipRepository;
-use App\Repositories\Interfaces\IUserRepository;
 use App\Services\Interfaces\IInviteService;
+use App\Services\Interfaces\IMembershipService;
+use App\Services\Interfaces\IUserService;
 
 class InviteService implements IInviteService {
   public function __construct(
     private IInviteRepository $inviteRepository,
-    private IUserRepository $userRepository,
-    private IMembershipRepository $membershipRepository,
+    private IMembershipService $membershipService,
+    private IUserService $userService,
   ) {}
 
-  public function sendInvitation(int $inviterId, Organization $org, User $invitee): bool {
-    $invitation = OrganizationInvite::from(
-      inviter: $inviterId,
-      invitee: $invitee->id,
-      orgId: $org->id
-    );
-    return $this->inviteRepository->save($invitation);
+  /** @return InvitationView[] */
+  public function findUserInvitations(int $userId): array {
+    return $this->inviteRepository->findUserInvitations($userId);
   }
 
-  public function acceptInvitation(int $inviteeId, int $orgId): bool {
-    $invitee = $this->userRepository->findById($inviteeId);
-    if (isset($invitee) === null) {
-      throw new \Exception("User not found.");
+  /** @return InvitationView[] */
+  public function findOrganizationInvitations(int $orgId): array {
+    return $this->inviteRepository->findOrganizationInvitations($orgId);
+  }
+
+  /** @return InvitationView */
+  public function findInvitation(int $inviteeId, int $orgId): ?InvitationView {
+    return $this->inviteRepository->findInvitation($inviteeId, $orgId);
+  }
+
+  public function createInvitation(int $orgId, int $inviteeId, int $inviterId): bool {
+    $invitation = $this->findInvitation($inviteeId, $orgId);
+
+    if (isset($invitation) === false) {
+      throw new \Exception("User already invited");
     }
+
+    $newInvitation = OrganizationInvite::from(
+      orgId: $orgId,
+      inviter: $inviterId,
+      invitee: $inviteeId
+    );
+
+    return $this->inviteRepository->save($newInvitation);
+  }
+
+  public function acceptInvitation(int $orgId, int $inviteeId): MembershipView {
+    $invitee = $this->userService->findUserById($inviteeId) ??
+    throw new \Exception("User not found.");
 
     if ($this->inviteRepository->findInvitation($inviteeId, $orgId) === null) {
       throw new \Exception("Invitation was not found");
     }
 
     $membership = Membership::from($invitee->id, $orgId, "MEMBER");
-    return $this->membershipRepository->save($membership);
+    if ($this->membershipService->createMembership($membership) === false) {
+      throw new \Exception("Unable to create membership.");
+    }
+
+    $membership = $this->membershipService->findMembership($orgId, $inviteeId) ??
+    throw new \Exception("Unable to find created invitation.");
+    return $membership;
   }
 
-  public function revokeInvitation(int $orgId, int $inviterId, int $inviteeId): bool {
-    $invitation = $this->inviteRepository->findInvitation($inviteeId, $orgId) ??
-    throw new Exception("Invitation was not found.");
-
-    $inviter = $this->membershipRepository->findMembership($orgId, $inviterId) ??
+  public function deleteInvitation(int $orgId, int $inviteeId, int $inviterId): bool {
+    $inviter = $this->membershipService->findMembership($orgId, $inviterId) ??
     throw new \Exception("Inviter is not a member of this organization.");
 
     if ($inviter->role !== "OWNER") {
       throw new \Exception("You are not authorized to do this operation.");
     }
 
-    return $this->inviteRepository->delete($invitation);
+    return $this->inviteRepository->delete($orgId, $inviteeId);
   }
 }

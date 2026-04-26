@@ -5,30 +5,34 @@ use App\Models\Membership;
 use App\Models\Organization;
 use App\Models\OrganizationContact;
 use App\Models\User;
-use App\Repositories\Interfaces\IMembershipRepository;
 use App\Repositories\Interfaces\IOrganizationRepository;
-use App\Repositories\Interfaces\IUserRepository;
 use App\Services\Interfaces\IInviteService;
+use App\Services\Interfaces\IMembershipService;
 use App\Services\Interfaces\IOrganizationService;
+use App\Services\Interfaces\IUserService;
 use Phalcon\Mvc\Model\Transaction\Manager as TxManager;
 
 class OrganizationService implements IOrganizationService {
   public function __construct(
     private IOrganizationRepository $organizationRepository,
-    private IMembershipRepository $membershipRepository,
-    private IUserRepository $userRepository,
+    private IMembershipService $membershipService,
     private IInviteService $inviteService,
+    private IUserService $userService,
   ) {}
 
-  public function findAll(): array {
-    return $this->organizationRepository->findAll();
+  public function findUserOrganizations(int $userId): array {
+    return $this->organizationRepository->findUserOrganizations($userId);
   }
 
-  public function createOrganization(User $user, CreateOrganizationRequestDto $request): Organization {
+  /** @return Organization */
+  public function createOrganization(int $userId, CreateOrganizationRequestDto $request): Organization {
     $manager     = new TxManager();
     $transaction = $manager->get();
 
     try {
+      $user = $this->userService->findUserById($userId);
+      if (isset($user) === false) {throw new \Exception("Not authorized");}
+
       $organization = Organization::fromRequest($request);
       $organization->setTransaction($transaction);
 
@@ -36,11 +40,11 @@ class OrganizationService implements IOrganizationService {
         throw new \Exception("Failed to create organization");
       }
 
-      $organization->refresh();
+      $organization->refresh(); // refreshes the entity to get the generated id
       $membership = Membership::from($user->id, $organization->id, "OWNER");
       $membership->setTransaction($transaction);
 
-      if ($this->membershipRepository->save($membership) === false) {
+      if ($this->membershipService->createMembership($membership) === false) {
         throw new \Exception("Failed to create membership");
       }
 
@@ -60,49 +64,37 @@ class OrganizationService implements IOrganizationService {
     }
   }
 
-  public function findOrganizationMembers(int $orgId): array {
-    return $this->membershipRepository->findOrganizationMembers($orgId);
-  }
-
   public function inviteUser(int $inviterId, int $orgId, string $inviteeEmail): bool {
-    /** @var Organization|null */
-    $org = $this->organizationRepository->findById($orgId);
+    $org = $this->organizationRepository->findOrganizationById($orgId);
+    var_dump($orgId);
+    die;
     if (isset($org) === false) {
-      throw new \Exception("Organization not found.");
+      throw new \Exception("Organization not found");
     }
 
     // Is the invitee the owner of the organization ?
     /** @var Membership|null */
-    $actorMembership = $this->membershipRepository->findMembership($org->id, $inviterId);
+    $actorMembership = $this->membershipService->findMembership($org->id, $inviterId);
     if (isset($actorMembership) === false | $actorMembership->role !== "OWNER") {
       throw new \Exception("You are not authorized to do this operation.");
     }
 
     /** @var User|null */
-    $invitee = $this->userRepository->findByEmail($inviteeEmail);
+    $invitee = $this->userService->findUserByEmail($inviteeEmail) ??
+    throw new \Exception("User was not found");
 
-    if (isset($invitee) === false) {
-      throw new \Exception("User was not found");
-    }
-
-    // Already a member ?
-    $isMember = $this->membershipRepository->findMembership(
-      orgId: $org->id,
-      userId: $invitee->id,
-    );
-
-    if ($isMember !== null) {
+    if ($this->membershipService->findMembership($org->id, $invitee->id) !== null) {
       throw new \Exception("User is already a member.");
     }
 
-    return $this->inviteService->sendInvitation(
+    return $this->inviteService->createInvitation(
+      orgId: $org->id,
       inviterId: $inviterId,
-      invitee: $invitee,
-      org: $org,
+      inviteeId: $invitee->id
     );
   }
 
-  public function deleteOrganization(User $user, int $orgId): bool {
+  public function deleteOrganization(int $userId, int $orgId): bool {
     throw new \Exception('Not implemented');
   }
 }

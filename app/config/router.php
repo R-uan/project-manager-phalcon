@@ -29,14 +29,19 @@ $router->add('/organization', [
   'action'     => 'index',
 ]);
 
-$router->add('/organization/create', [
+$router->add('/organization/new', [
   'controller' => 'organization',
-  'action'     => 'create',
+  'action'     => 'new',
 ]);
 
 $router->add('/organization/{orgId}/members', [
   'controller' => 'organization',
   'action'     => 'members',
+]);
+
+$router->addPost('/organization/invites/accept', [
+  'controller' => 'organization',
+  'action'     => 'acceptInvitation',
 ]);
 
 // User Endpoints
@@ -45,19 +50,14 @@ $router->add('/user', [
   'action'     => 'index',
 ]);
 
-$router->add('/user/memberships', [
+$router->add('/user/organizations', [
   'controller' => 'user',
-  'action'     => 'memberships',
+  'action'     => 'organizations',
 ]);
 
 $router->add('/user/profile', [
   'controller' => 'user',
   'action'     => 'profile',
-]);
-
-$router->add('/user/profile/memberships', [
-  'controller' => 'user',
-  'action'     => 'memberships',
 ]);
 
 return $router;

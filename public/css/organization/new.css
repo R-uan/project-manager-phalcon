@@ -1,0 +1,59 @@
+#new-page {
+  padding: 5px;
+}
+
+.greeting {
+  width: 100%;
+  display: flex;
+  margin-bottom: 30px;
+  align-items: center;
+  flex-direction: column;
+  outline: 1px solid red;
+
+  &>h2 {
+    font-size: 24px;
+    font-weight: bold;
+  }
+}
+
+#content {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: 1px solid blue;
+}
+
+#content form {
+  gap: 7px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  .field {
+    gap: 3px;
+    display: flex;
+    flex-direction: column;
+
+    &>label {
+      font-size: 0.9rem;
+    }
+
+    &>input {
+      width: 400px;
+      height: 30px;
+      padding-left: 5px;
+      border-radius: 3px;
+      border: 1px solid black;
+    }
+  }
+
+  &>div:last-child {
+    margin-top: 15px;
+  }
+
+  button {
+    padding: 4px 8px;
+    border: 1px solid black;
+  }
+}

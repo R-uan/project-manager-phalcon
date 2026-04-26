@@ -1,0 +1,17 @@
+### Endpoints
+- User
+  - [ ] Profile `/user/profile`
+  - [ ] Organizations `/user/organizations`
+  - [ ] Overall Tasks `/user/tasks`
+  - [ ] Ovrall Projects `/user/projects`
+- Organization
+  - [x] Create organization `/organization/new` (View)
+  - [ ] Organization Members `/organization/members` (View)
+    - GET: Get all the organization members;
+    - POST: Invites an user to the organization;
+  - [ ] Organization Projects `/organization/projects` (View)
+    - GET: Get all the organization's project members;
+    - POST: Create a new project (needs a manager);
+  - [ ] Project Tasks `/organization/projects/{projectId}/tasks` (View)
+    - GET: Get all the project's tasks for members;
+    - POST: Create a new task;

@@ -22,8 +22,8 @@ class ProfileView {
     return new ProfileView(
       $user->id,
       $user->email,
-      $user->first_name,
-      $user->last_name,
+      $user->firstName,
+      $user->lastName,
       $user->location,
       $user->website,
       $memberships

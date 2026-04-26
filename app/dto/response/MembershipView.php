@@ -13,12 +13,12 @@ class MembershipView {
 
   public static function fromArray(mixed $membership) {
     return new MembershipView(
-      $membership['user_id'],
-      $membership["first_name"],
-      $membership['last_name'],
-      $membership['org_id'],
+      $membership['userId'],
+      $membership["firstName"],
+      $membership['lastName'],
+      $membership['orgId'],
       $membership["role"],
-      $membership['org_name'],
+      $membership['orgName'],
     );
   }
 }

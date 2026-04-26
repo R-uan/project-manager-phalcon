@@ -1,7 +1,6 @@
 <?php
 declare (strict_types = 1);
 
-use App\Library\JwtService;
 use App\Repositories\Interfaces\IInviteRepository;
 use App\Repositories\Interfaces\IMembershipRepository;
 use App\Repositories\Interfaces\IOrganizationRepository;
@@ -11,6 +10,7 @@ use App\Repositories\MembershipRepository;
 use App\Repositories\OrganizationRepository;
 use App\Repositories\UserRepository;
 use App\Services\AuthService;
+use App\Services\MembershipService;
 use App\Services\UserService;
 use Phalcon\Flash\Direct as Flash;
 use Phalcon\Html\Escaper;
@@ -163,7 +163,6 @@ $di->setShared(IMembershipRepository::class, function () use ($di) {
 
 $di->setShared(IOrganizationRepository::class, function () use ($di) {
   return new OrganizationRepository(
-    $di->get(IMembershipRepository::class),
     $di->get('modelsManager')
   );
 });
@@ -175,10 +174,6 @@ $di->setShared(IInviteRepository::class, function () use ($di) {
 });
 
 // Services
-$di->setShared('jwt', function () {
-  $config = $this->getConfig();
-  return new JwtService($config);
-});
 
 $di->setShared('userService', function () use ($di) {
   return new UserService(
@@ -198,17 +193,17 @@ $di->setShared('authService', function () use ($di) {
 $di->setShared('inviteService', function () use ($di) {
   return new InviteService(
     $di->get(IInviteRepository::class),
-    $di->get(IUserRepository::class),
-    $di->get(IMembershipRepository::class)
+    $di->get('membershipService'::class),
+    $di->get('userService'),
   );
 });
 
 $di->setShared('organizationService', function () use ($di) {
   return new OrganizationService(
     $di->get(IOrganizationRepository::class),
-    $di->get(IMembershipRepository::class),
-    $di->get(IUserRepository::class),
-    $di->get('inviteService')
+    $di->get('membershipService'::class),
+    $di->get('inviteService'),
+    $di->get('userService'::class),
   );
 });
 

@@ -3,22 +3,22 @@ namespace App\Models;
 use Phalcon\Mvc\Model;
 
 class Project extends Model {
-  public $id;              // int
-  public $name;            // string
-  public $description;     // string
-  public $organization_id; // int
+  public $id;          // int
+  public $name;        // string
+  public $description; // string
+  public $orgId;       // int
 
   public $deadline;  // date | null
   public $startline; // date
 
-  public $created_at; // date
+  public $createdAt; // date
 
   public function columnMap(): array {
     return [
       'id'              => 'id',
       'name'            => 'name',
       'description'     => 'description',
-      'organization_id' => 'organizationId',
+      'organization_id' => 'orgId',
       'deadline'        => 'deadline',
       'startline'       => 'startline',
       'created_at'      => 'createdAt',
