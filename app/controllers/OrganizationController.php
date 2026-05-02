@@ -1,7 +1,6 @@
 <?php
 
 use App\Dto\Request\CreateOrganizationRequestDto;
-use App\Models\Organization;
 
 class OrganizationController extends ControllerBase {
   // /organization
@@ -11,7 +10,7 @@ class OrganizationController extends ControllerBase {
     $this->assets->collection('js')->addJs('js/organization/index.js');
     $this->assets->collection('css')->addCss('css/organization/index.css');
 
-    $userId = $this->session->get('auth_user_id');
+    $userId = $this->session->get('authUserId');
 
     if (isset($userId) === false) {
       $this->flashSession->error("Authentication necessary");
@@ -22,119 +21,152 @@ class OrganizationController extends ControllerBase {
     $this->view->setVar('organizations', $organizations);
   }
 
-  // /organization/{orgId}/members
-  // Renders a list of the organization's members, user needs to be part of the organization
-  // - Authentication required;
   public function membersAction() {
-    $userId = $this->session->get('auth_user_id');
+    $userId = $this->session->get("authUserId");
     if (isset($userId) === false) {
-      $this->flashSession->error("Authentication required.");
-      return $this->response->redirect('/auth/login');
+      $this->flashSession->error("Authentication necessary");
+      return $this->response->redirect("/auth/login");
     }
 
-    if ($this->request->isGet()) {
-      try {
-        $orgId   = $this->dispatcher->getParam('orgId', 'int');
-        $members = $this->membershipService->findOrganizationMemberships($orgId);
-        $this->view->setVar('members', $members);
-      } catch (\Throwable $th) {
-        throw $th;
-      }
+    $orgId = $this->dispatcher->getParam('orgId', 'int');
+    if ($this->organizationService->findOrganization($orgId) === null) {
+      $this->flashSession->error("Organization does not exist");
+      return $this->response->redirect("/organization");
     }
 
-    if ($this->request->isPost()) {
-      try {
-
-        $targetUserEmail = $this->request->getPost('targetEmail');
-        if (isset($targetUserEmail) === false) {
-          $this->flashSession->error("Target user required");
-          return;
-        }
-
-        $orgId = $this->dispatcher->getParam('orgId', 'int');
-        if ($this->organizationService->inviteUser($userId, $orgId, $targetUserEmail) === false) {
-          $this->flashSession->error("Could not invite member.");
-          return;
-        }
-
-        $this->flashSession->success("Member invited.");
-        return $this->response->redirect('/organization/' . $orgId . '/members');
-      } catch (\Throwable $th) {
-        $this->flashSession->error($th->getMessage());
-        return $this->response->redirect('/organization/' . $orgId . '/members');
-      }
+    try {
+      $memberships = $this->membershipService->findOrganizationMemberships($userId, $orgId);
+      $this->view->setVar('memberships', $memberships);
+    } catch (\Throwable $th) {
+      $this->flashSession->error($th->getMessage());
     }
   }
 
-  // /organization/new
-  // Creates new organization.
-  // - Authentication required;
-  public function newAction() {
-    $this->assets->addCss('css/organization/new.css');
-    $userId = $this->session->get('auth_user_id');
+  public function newOrganizationAction() {
+    $this->view->disable();
+    $userId = $this->session->get("authUserId");
 
     if (isset($userId) === false) {
       $this->flashSession->error("Authentication necessary");
       return $this->response->redirect('/auth/login');
     }
 
-    if ($this->request->isPost()) {
-      try {
-        $request = CreateOrganizationRequestDto::fromArray([
-          'name'         => $this->request->getPost('name'),
-          'contactEmail' => $this->request->getPost('contactEmail'),
-          'isPublic'     => $this->request->getPost('isPublic') ?? false,
-        ]);
+    try {
+      $request = CreateOrganizationRequestDto::fromArray([
+        'handle'       => $this->request->getPost('handle'),
+        'displayName'  => $this->request->getPost('name'),
+        'contactEmail' => $this->request->getPost('contactEmail'),
+        'isPublic'     => $this->request->getPost('visibility'),
+      ]);
 
-        $validate = $request->validate();
-
-        if ($validate !== true) {
-          foreach ($validate as $error) {
-            $this->flashSession->error($error);
-          }
-          return;
+      $validate = $request->validate();
+      if ($validate !== true) {
+        foreach ($validate as $error) {
+          $this->flashSession->error($error);
         }
-
-        /** @var Organization */
-        $this->organizationService->createOrganization($userId, $request);
-        return $this->response->redirect('/organization');
-      } catch (\Throwable $th) {
-        $this->flashSession->error($th->getMessage());
-        return $this->response->redirect('/organization/create');
+        return;
       }
+
+      /** @var Organization */
+      $this->organizationService->createOrganization($userId, $request);
+      return $this->response->redirect('/organization');
+    } catch (\Throwable $th) {
+      throw $th;
+      $this->flashSession->error($th->getMessage());
+      return $this->response->redirect('/organization/new');
     }
   }
 
-  // /organization/invite/accept
-  public function acceptInvitationAction() {
+  public function newOrganizationFormAction() {
+    $this->assets->addCss('css/organization/new.css');
+    $this->assets->addJs('js/organization/new.js');
+
+    $this->view->pick('organization/new');
+
+    if ($this->session->get('authUserId') === null) {
+      $this->flashSession->error("Authentication necessary");
+      return $this->response->redirect('/auth/login');
+    }
+  }
+
+  public function inviteAction() {
     $this->view->disable();
-    if ($this->request->isPost()) {
-      try {
-        $userId = (int)$this->session->get("auth_user_id");
-        $orgId  = $this->dispatcher->getParam('orgId', 'int');
+    $userId = $this->session->get("authUserId");
+    if (isset($userId) === false) {
+      $this->flashSession->error("Authentication necessary");
+      return $this->response->redirect("/auth/login");
+    }
 
-        if (isset($userId) === false) {return $this->response->redirect("/auth/login");}
-        $membership = $this->inviteService->acceptInvitation($userId, $orgId);
-        $this->response->setJsonContent([
-          'success'    => true,
-          'membership' => [
-            'orgId'   => $membership->orgId,
-            'orgName' => $membership->orgName,
-            'role'    => $membership->role,
-          ],
-        ]);
-      } catch (\Throwable $th) {
-        $this->response->setStatusCode(400);
-        $this->response->setJsonContent([
-          'success' => false,
-          'message' => $th->getMessage(),
-        ]);
+    $orgId = $this->dispatcher->getParam('orgId', 'int');
+    if ($this->organizationService->findOrganization($orgId) === null) {
+      $this->flashSession->error("Organization does not exist");
+      return $this->response->redirect("/organization");
+    }
+
+    try {
+      $targetUserEmail = $this->request->getPost('targetEmail');
+
+      if (isset($targetUserEmail) === false) {
+        $this->flashSession->error("Target user required");
+        return;
       }
-      return $this->response->send();
+
+      if ($this->organizationService->inviteUser($userId, $orgId, $targetUserEmail) === false) {
+        $this->flashSession->error("Could not invite member.");
+        return;
+      }
+
+      $this->flashSession->success("Member invited.");
+      return $this->response->redirect('/organization/' . $orgId . '/members');
+    } catch (\Throwable $th) {
+      throw $th;
     }
   }
 
-  public function declineInviteAction() {
+  public function acceptAction() {
+    $this->view->disable();
+    $orgId  = $this->dispatcher->getParam('orgId', 'int');
+    $userId = $this->session->get('authUserId');
+    try {
+      if (isset($userId) === false) {
+        return $this->response->setStatusCode(401)->setJsonContent([
+          'success' => false,
+          'message' => 'unauthorized',
+        ]);
+      }
 
+      $membership = $this->inviteService->acceptInvitation($orgId, $userId);
+      return $this->response->setJsonContent(json_encode($membership));
+    } catch (\Throwable $th) {
+      return $this->response->setStatusCode(500)->setJsonContent([
+        'message' => json_encode($th->getMessage()),
+      ]);
+    }
+  }
+
+  public function denyAction() {
+
+  }
+
+  public function checkAvailabilityAction() {
+    $this->view->disable();
+    $field   = $this->request->getQuery('field');
+    $value   = $this->request->getQuery('value');
+    $allowed = ['handle'];
+
+    if (in_array($field, $allowed) === false) {
+      return $this->response->setStatusCode(403)->setJsonContent([
+        'available' => 'false',
+        'message'   => 'invalid field',
+      ]);
+    }
+
+    /** @return bool */
+    $available = $this->organizationService->verifyHandleAvailability($value);
+
+    return $this->response->setStatusCode(200)->setJsonContent([
+      'available' => $available,
+      'message'   => $field . ($available ? ' is available.' : ' is not available.'),
+    ]);
   }
 }

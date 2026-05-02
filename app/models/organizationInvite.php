@@ -8,6 +8,7 @@ class OrganizationInvite extends Model {
   public $inviteeUserId; // The one invited
   public $orgId;         // to where
   public $createdAt;
+  public $active; // remove this
 
   public static function from(int $invitee, int $inviter, int $orgId): self {
     $invite                = new self();
@@ -23,6 +24,7 @@ class OrganizationInvite extends Model {
       'inviter_user_id' => 'inviterUserId',
       'organization_id' => 'orgId',
       'created_at'      => 'createdAt',
+      'active'          => 'active',
     ];
   }
 

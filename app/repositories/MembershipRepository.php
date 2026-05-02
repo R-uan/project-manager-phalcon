@@ -36,7 +36,7 @@ class MembershipRepository implements IMembershipRepository {
       SELECT
         m.role, m.userId,
         u.firstName, u.lastName,
-        o.id AS orgId, o.name AS orgName,
+        o.id AS orgId, o.handle AS orgHandle, o.isPublic,
         oc.website, oc.email
       FROM App\Models\Membership m
       LEFT JOIN App\Models\User u ON u.id = m.userId
@@ -53,7 +53,7 @@ class MembershipRepository implements IMembershipRepository {
       SELECT
         m.role, m.userId,
         u.firstName, u.lastName,
-        o.id AS orgId, o.name AS orgName,
+        o.id AS orgId, o.handle AS orgHandle, o.isPublic, o.displayName,
         oc.website, oc.email
       FROM App\Models\Membership m
       LEFT JOIN App\Models\User u ON u.id = m.userId
@@ -73,7 +73,7 @@ class MembershipRepository implements IMembershipRepository {
       SELECT
         m.role, m.userId,
         u.firstName, u.lastName,
-        o.id AS orgId, o.name AS orgName,
+        o.id AS orgId, o.handle AS orgHandle, o.isPublic,
         oc.website, oc.email
       FROM App\Models\Membership m
       LEFT JOIN App\Models\User u ON u.id = m.userId

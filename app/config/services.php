@@ -178,13 +178,13 @@ $di->setShared(IInviteRepository::class, function () use ($di) {
 $di->setShared('userService', function () use ($di) {
   return new UserService(
     $di->get(IUserRepository::class),
-    $di->get(IMembershipRepository::class)
+    $di->get('membershipService')
   );
 });
 
 $di->setShared('authService', function () use ($di) {
   return new AuthService(
-    $di->get(IUserRepository::class),
+    $di->get('userService'),
     $di->get('security'),
     $di->get('session')
   );

@@ -19,7 +19,7 @@ class OrganizationRepository implements IOrganizationRepository {
     $organizations = $this->modelsManager->createQuery("
       SELECT
         ms.role AS userRole,
-        o.name AS orgName, o.id AS orgId,
+        o.handle AS orgHandle, o.id AS orgId,
         CONCAT(ou.firstName, ' ', ou.lastName) AS ownerName, ou.id AS ownerId,
         oc.email AS orgEmail
       FROM App\Models\Organization o
@@ -35,11 +35,19 @@ class OrganizationRepository implements IOrganizationRepository {
     }, iterator_to_array($organizations));
   }
 
-  public function findOrganizationById(int $id): ?Organization {
+  public function findById(int $id): ?Organization {
     /** @var Organization|null */
     return Organization::findFirst([
       'conditions' => 'id = :id:',
       'bind'       => ['id' => $id],
+    ]);
+  }
+
+  public function findByHandle(string $handle): ?Organization {
+    /** @var Organization|null */
+    return Organization::findFirst([
+      'conditions' => 'handle = :handle:',
+      'bind'       => ['handle' => $handle],
     ]);
   }
 }

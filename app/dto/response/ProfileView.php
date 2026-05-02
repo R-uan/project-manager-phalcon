@@ -7,6 +7,7 @@ class ProfileView {
   public function __construct(
     public int $userId,
     public string $email,
+    public string $username,
     public string $firstName,
     public string $lastName,
     public ?string $location,
@@ -22,6 +23,7 @@ class ProfileView {
     return new ProfileView(
       $user->id,
       $user->email,
+      $user->username,
       $user->firstName,
       $user->lastName,
       $user->location,

@@ -34,7 +34,7 @@ class InviteService implements IInviteService {
   public function createInvitation(int $orgId, int $inviteeId, int $inviterId): bool {
     $invitation = $this->findInvitation($inviteeId, $orgId);
 
-    if (isset($invitation) === false) {
+    if (isset($invitation) === true) {
       throw new \Exception("User already invited");
     }
 
@@ -51,7 +51,7 @@ class InviteService implements IInviteService {
     $invitee = $this->userService->findUserById($inviteeId) ??
     throw new \Exception("User not found.");
 
-    if ($this->inviteRepository->findInvitation($inviteeId, $orgId) === null) {
+    if ($this->inviteRepository->findInvitation($orgId, $inviteeId) === null) {
       throw new \Exception("Invitation was not found");
     }
 
@@ -62,6 +62,7 @@ class InviteService implements IInviteService {
 
     $membership = $this->membershipService->findMembership($orgId, $inviteeId) ??
     throw new \Exception("Unable to find created invitation.");
+    $this->inviteRepository->delete($orgId, $inviteeId);
     return $membership;
   }
 

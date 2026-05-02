@@ -20,6 +20,10 @@ class OrganizationService implements IOrganizationService {
     private IUserService $userService,
   ) {}
 
+  public function findOrganization(int $orgId): ?Organization {
+    return $this->organizationRepository->findById($orgId);
+  }
+
   public function findUserOrganizations(int $userId): array {
     return $this->organizationRepository->findUserOrganizations($userId);
   }
@@ -65,9 +69,7 @@ class OrganizationService implements IOrganizationService {
   }
 
   public function inviteUser(int $inviterId, int $orgId, string $inviteeEmail): bool {
-    $org = $this->organizationRepository->findOrganizationById($orgId);
-    var_dump($orgId);
-    die;
+    $org = $this->organizationRepository->findById($orgId);
     if (isset($org) === false) {
       throw new \Exception("Organization not found");
     }
@@ -96,5 +98,14 @@ class OrganizationService implements IOrganizationService {
 
   public function deleteOrganization(int $userId, int $orgId): bool {
     throw new \Exception('Not implemented');
+  }
+
+  public function findOrganizationByHandle(string $handle): ?Organization {
+    return $this->organizationRepository->findByHandle($handle);
+  }
+
+  public function verifyHandleAvailability(string $handle): bool {
+    $organization = $this->organizationRepository->findByHandle($handle);
+    return $organization === null;
   }
 }

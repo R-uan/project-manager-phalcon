@@ -1,6 +1,10 @@
 ### Endpoints
 - User
   - [ ] Profile `/user/profile`
+    - View that contains all the relevant information about the user. 
+    - Private by default.
+    - Organizations, projects, tasks.
+
   - [ ] Organizations `/user/organizations`
   - [ ] Overall Tasks `/user/tasks`
   - [ ] Ovrall Projects `/user/projects`

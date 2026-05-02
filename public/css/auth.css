@@ -1,9 +1,9 @@
 #container {
   flex: 1;
   display: flex;
-  padding: 20px;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  padding: 20px;
   background-color: #f5f5f5;
 }
 
@@ -27,33 +27,34 @@ p {
   color: #666;
 }
 
-/* Form Styles */
+#names {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.name-wrapper {
+  flex: 1;
+}
+
 .field-wrapper {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 label {
   display: block;
   margin-bottom: 6px;
   font-size: 14px;
-  font-weight: 500;
   color: #333;
 }
 
-.required {
-  color: #e74c3c;
-  margin-left: 2px;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="password"] {
+input {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
 }
 
 input:focus {
@@ -62,30 +63,6 @@ input:focus {
   box-shadow: 0 0 0 2px rgba(74, 144, 217, 0.2);
 }
 
-/* Checkbox Styles */
-.checkbox-wrapper {
-  margin-bottom: 24px;
-}
-
-.checkbox-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.checkbox-container input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-}
-
-.checkbox-container label {
-  margin-bottom: 0;
-  font-weight: 400;
-  cursor: pointer;
-}
-
-/* Message/Error Styles */
 .message-wrapper {
   display: block;
   font-size: 12px;
@@ -94,7 +71,6 @@ input:focus {
   min-height: 16px;
 }
 
-/* Submit Button */
 .submit-btn {
   width: 100%;
   padding: 12px;
@@ -103,8 +79,8 @@ input:focus {
   border: none;
   border-radius: 4px;
   font-size: 16px;
-  font-weight: 500;
   cursor: pointer;
+  margin-top: 8px;
   transition: background-color 0.2s;
 }
 
@@ -117,13 +93,17 @@ input:focus {
   cursor: not-allowed;
 }
 
-/* Responsive Adjustments */
-@media (max-width: 520px) {
-  #content {
-    padding: 24px;
-  }
-  
-  h1 {
-    font-size: 20px;
-  }
+.auth-redirect {
+  text-align: center;
+  margin-top: 24px;
+  margin-bottom: 0;
+}
+
+.auth-redirect a {
+  color: #4a90d9;
+  text-decoration: none;
+}
+
+.auth-redirect a:hover {
+  text-decoration: underline;
 }

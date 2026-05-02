@@ -7,6 +7,7 @@ use Phalcon\Mvc\Model;
 class User extends Model {
   public $id;        // int
   public $email;     // string
+  public $username;  // string
   public $password;  // string
   public $firstName; // string
   public $lastName;  // string
@@ -26,12 +27,14 @@ class User extends Model {
       'location'   => 'location',
       'last_login' => 'lastLogin',
       'website'    => 'website',
+      'username'   => 'username',
     ];
   }
 
   public static function fromRequest(CreateUserRequestDto $request) {
     $user            = new User();
     $user->email     = $request->email;
+    $user->username  = $request->username;
     $user->firstName = $request->first_name;
     $user->lastName  = $request->last_name;
     $user->password  = $request->password;

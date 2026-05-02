@@ -18,26 +18,31 @@ $router->add('/auth/register', [
   'action'     => 'register',
 ]);
 
+$router->addGet('/auth/verify-availability', 'auth::checkAvailability');
+
 $router->add('/auth/logout', [
   'controller' => 'auth',
   'action'     => 'logout',
 ]);
 
 // Organization Endpoints
+$router->addGet('/org/verify-availability', 'organization::checkAvailability');
+
 $router->add('/organization', [
   'controller' => 'organization',
   'action'     => 'index',
-]);
-
-$router->add('/organization/new', [
-  'controller' => 'organization',
-  'action'     => 'new',
 ]);
 
 $router->add('/organization/{orgId}/members', [
   'controller' => 'organization',
   'action'     => 'members',
 ]);
+
+$router->addPost('/organization/new', "organization::newOrganization");
+$router->addGet('/organization/new', "organization::newOrganizationForm");
+$router->addPost('/organization/{orgId}/members/invite', "organization::invite");
+$router->addGet('/organization/{orgId}/members/invite/deny', "organization::deny");
+$router->addGet('/organization/{orgId}/members/invite/accept', "organization::accept");
 
 $router->addPost('/organization/invites/accept', [
   'controller' => 'organization',
@@ -55,9 +60,6 @@ $router->add('/user/organizations', [
   'action'     => 'organizations',
 ]);
 
-$router->add('/user/profile', [
-  'controller' => 'user',
-  'action'     => 'profile',
-]);
+$router->add('/user/{username}', 'user::profile');
 
 return $router;

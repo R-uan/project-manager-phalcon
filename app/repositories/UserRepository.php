@@ -23,6 +23,14 @@ class UserRepository implements IUserRepository {
     ]);
   }
 
+  public function findByUsername(string $username): ?User {
+    /** @var User|null */
+    return User::findFirst([
+      'conditions' => 'username = :username:',
+      'bind'       => ['username' => $username],
+    ]) ?: null;
+  }
+
   public function findByEmail(string $email): ?User {
     /** @var User|null */
     return User::findFirst([

@@ -1,36 +1,38 @@
 <?php
 
 use App\Dto\Response\ProfileView;
-use App\Models\User;
 
 class UserController extends ControllerBase {
-  // /user/profile
+  // /user/{username}
   public function profileAction() {
-    $userId = (int)$this->session->get('auth_user_id');
+    $this->assets->addCss('css/user/profile.css');
+    try {
+      $username = $this->dispatcher->getParam('username', 'string');
 
-    if (! $userId) {
-      $this->flashSession->error("Authentication necessary");
-      return $this->response->redirect('/auth/login');
+      /** @var ProfileView */
+      $profile = $this->userService->getUserProfile($username);
+
+      // if not authenticated as the username
+      // remove all the private memberships.
+      if ($username !== $this->session->get('username')) {
+        $profile->memberships = array_filter($profile->memberships, function ($entry) {
+          return $entry->isPublic === true;
+        });
+      }
+
+      $this->view->setVar('profile', $profile);
+    } catch (\Throwable $th) {
+      $this->response->redirect('/');
     }
-
-    /** @var User|null */
-    $user = $this->userRepository->findById($userId);
-
-    if ($user === null) {
-      $this->flashSession->error("Authentication necessary");
-      return $this->response->redirect('/auth/login');
-    }
-
-    /** @var MembershipView[] */
-    $memberships = $this->membershipRepository->findUserMemberships($user->id);
-    $profile     = ProfileView::from($user, $memberships);
-    $this->view->setVar('profile', $profile);
   }
 
   // /user/organizations
   public function organizationsAction() {
+    $this->assets->collection('js')->addJs('js/user/organizations.js');
+    $this->assets->collection('css')->addCss('css/user/organizations.css');
+
     try {
-      $userId = (int)$this->session->get('auth_user_id');
+      $userId = (int)$this->session->get('authUserId');
 
       if (isset($userId) === false) {
         $this->flashSession->error("Authentication necessary");
@@ -48,18 +50,8 @@ class UserController extends ControllerBase {
         $memberships = $this->membershipService->findUserMemberships($userId);
         $invitations = $this->inviteService->findUserInvitations($userId);
 
-        $this->view->setVar('membershipsJson', json_encode(array_map(fn($m) => [
-          'orgId'   => $m->orgId,
-          'orgName' => $m->orgName,
-          'role'    => $m->role,
-        ], $memberships)));
-
-        $this->view->setVar('invitationsJson', json_encode(array_map(fn($i) => [
-          'orgId'       => $i->orgId,
-          'orgName'     => $i->orgName,
-          'inviterName' => $i->inviterName,
-        ], $invitations)));
-
+        $this->view->setVar('memberships', $memberships);
+        $this->view->setVar('invitations', $invitations);
         $this->view->pick('user/organizations');
       }
     } catch (\Throwable $th) {
@@ -70,6 +62,8 @@ class UserController extends ControllerBase {
   // /user -> /user/profile
   // just redirects to profile.
   public function indexAction() {
-    return $this->response->redirect('/user/profile');
+    $username = $this->session->get('authUsername');
+    if (isset($username) === false) {return $this->response->redirect('/auth/login');}
+    return $this->response->redirect('/user/' . $username);
   }
 }

@@ -1,68 +1,52 @@
-<div class="flex min-h-screen font-sans">
+<div id="container">
+  <div id="content">
+    <h1>Create an account</h1>
+    <p>Fill in your details to get started</p>
 
-  <!-- Left sidebar -->
-  <div class="hidden lg:flex w-80 flex-shrink-0 bg-[#0f0f0f] flex-col justify-between p-10">
-    <div class="text-white font-medium text-lg">
-      <span class="inline-block w-7 h-7 bg-white rounded-md mr-2 align-middle"></span>
-      Acme
-    </div>
-    <div>
-      <p class="text-gray-400 text-sm leading-relaxed mb-4">
-        "Building something great starts with the right foundation. Welcome aboard."
-      </p>
-      <p class="text-gray-300 text-sm font-medium">Get started in seconds — no credit card required.</p>
-    </div>
-    <p class="text-gray-600 text-xs">© 2026 Acme Inc. · Privacy · Terms</p>
-  </div>
+    {{ flashSession.output() }}
 
-  <!-- Main content -->
-  <div class="flex-1 bg-gray-50 dark:bg-zinc-900 flex items-center justify-center p-8">
-    <div class="w-full max-w-md">
-
-      <h1 class="text-2xl font-medium text-gray-900 dark:text-white mb-1">Create an account</h1>
-      <p class="text-sm text-gray-400 mb-7">Fill in your details to get started</p>
-
-      {{ flashSession.output() }}
-
-      <form method="POST" action="/auth/register">
-
-        <div class="flex gap-3 mb-4">
-          <div class="flex-1">
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">First name</label>
-            <input type="text" name="firstName" placeholder="John" required
-              class="w-full border border-gray-200 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-400 dark:focus:border-zinc-500 transition-colors">
-          </div>
-          <div class="flex-1">
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">Last name</label>
-            <input type="text" name="lastName" placeholder="Smith" required
-              class="w-full border border-gray-200 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-400 dark:focus:border-zinc-500 transition-colors">
-          </div>
+    <form method="POST" action="/auth/register">
+      <div id="names">
+        <div class="name-wrapper">
+          <label>First name</label>
+          <input id="first-name" type="text" name="firstName" placeholder="John" required>
+          <span id="first-name-message" class="message-wrapper"></span>
         </div>
-
-        <div class="mb-4">
-          <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">Email address</label>
-          <input type="email" name="email" placeholder="john@example.com" required
-            class="w-full border border-gray-200 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-400 dark:focus:border-zinc-500 transition-colors">
+        <div class="name-wrapper">
+          <label>Last name</label>
+          <input id="last-name" type="text" name="lastName" placeholder="Smith" required>
+          <span id="last-name-message" class="message-wrapper"></span>
         </div>
+      </div>
 
-        <div class="mb-6">
-          <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">Password</label>
-          <input type="password" name="password" placeholder="Min. 8 characters" required
-            class="w-full border border-gray-200 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-400 dark:focus:border-zinc-500 transition-colors">
-        </div>
+      <div class="field-wrapper">
+        <label>Username</label>
+        <input id="username" type="text" name="username" placeholder="Choose a username" required>
+        <span id="username-message" class="message-wrapper"></span>
+      </div>
 
-        <button type="submit"
-          class="w-full bg-white text-gray-900 rounded-lg py-2.5 text-sm font-medium hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors">
-          Create account
-        </button>
+      <div class="field-wrapper">
+        <label>Email address</label>
+        <input id="email" type="email" name="email" placeholder="john@example.com" required>
+        <span id="email-message" class="message-wrapper"></span>
+      </div>
 
-      </form>
+      <div class="field-wrapper">
+        <label>Password</label>
+        <input id="password" type="password" name="password" placeholder="Min. 8 characters" required>
+        <span id="password-message" class="message-wrapper"></span>
+      </div>
 
-      <p class="text-center text-sm text-gray-400 mt-5">
-        Already have an account?
-        <a href="/auth/login" class="text-gray-900 dark:text-white underline underline-offset-2">Sign in</a>
-      </p>
+      <button id="submit-btn" class="submit-btn" disabled type="submit">
+        Create account
+      </button>
 
-    </div>
+    </form>
+
+    <p class="auth-redirect">
+      Already have an account?
+      <a href="/auth/login">Sign in</a>
+    </p>
+
   </div>
 </div>

@@ -25,7 +25,8 @@ class BbbOrganizationsMigration_100 extends Migration {
       CREATE TABLE
         organizations (
             id SERIAL PRIMARY KEY,
-            name VARCHAR(50) NOT NULL,
+            handle VARCHAR(50) NOT NULL UNIQUE,
+            display_name VARCHAR(255) NOT NULL,
             is_public BOOLEAN NOT NULL,
             location VARCHAR(20),
             created_at TIMESTAMPTZ

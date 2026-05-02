@@ -9,12 +9,13 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	</head>
 
-	<body class="h-full">
+	<body>
 		<header>
 			<ul>
 				<li>
 					<a href="/organization">Organizations</a>
 					<a href="/user/profile">Profile</a>
+					<a href="/auth/logout">Logout</a>					
 				</li>
 			</ul>
 		</header>

@@ -26,7 +26,11 @@ class MembershipService implements IMembershipService {
   }
 
   /** @return MembershipView[] */
-  public function findOrganizationMemberships(int $orgId): array {
+  public function findOrganizationMemberships(int $userId, int $orgId): array {
+    if ($this->findMembership($orgId, $userId) === null) {
+      throw new \Exception("You are not a member of this organization.");
+    }
+
     return $this->membershipRepository->findOrganizationMemberships($orgId);
   }
 

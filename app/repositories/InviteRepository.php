@@ -11,7 +11,17 @@ class InviteRepository implements IInviteRepository {
   ) {}
 
   public function findInvitation(int $orgId, int $inviteeId): ?InvitationView {
-    throw new \Exception('Not implemented');
+    $invitation = $this->modelsManager->createQuery('
+      SELECT
+        oi.inviteeUserId AS userId,
+        o.name AS orgName, o.id AS orgId,
+        uir.firstName AS inviterName, uir.id AS inviterId
+      FROM App\Models\OrganizationInvite oi
+      LEFT JOIN App\Models\User uir ON uir.id = oi.inviterUserId
+      LEFT JOIN App\Models\Organization o ON o.id = oi.orgId
+      WHERE inviteeUserId = :userId: AND o.id = :orgId:
+    ')->execute(['userId' => $inviteeId, 'orgId' => $orgId])->getFirst();
+    return $invitation === null ? null : InvitationView::fromRow($invitation);
   }
 
   public function save(OrganizationInvite $orgInvite): bool {
@@ -34,7 +44,7 @@ class InviteRepository implements IInviteRepository {
         uir.firstName AS inviterName, uir.id AS inviterId
       FROM App\Models\OrganizationInvite oi
       LEFT JOIN App\Models\User uir ON uir.id = oi.inviterUserId
-      LEFT JOIN App\Models\Organization o ON o.id = oi.organizationId
+      LEFT JOIN App\Models\Organization o ON o.id = oi.orgId
       WHERE inviteeUserId = :userId:
     ')->execute(['userId' => $userId]);
 
